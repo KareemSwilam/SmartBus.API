@@ -1,0 +1,20 @@
+﻿using SmartBus.Domain.IRepository;
+using SmartBus.Domain.Models;
+using SmartBus.Infrasturcture.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SmartBus.Infrasturcture.Repository
+{
+    public class CompanyRepository:Repository<Company>, ICompanyRepository  
+    {
+        public CompanyRepository(ApplicationContext context) : base(context)    
+        {
+            
+        }
+    }
+}
