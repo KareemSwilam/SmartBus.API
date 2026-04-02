@@ -11,7 +11,7 @@ namespace SmartBus.Domain.IRepository
     {
         public Task<T> Get(Expression<Func<T, bool>>? filter = null, bool tarcking = true);
         public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, bool tarcking = true);
-        public Task Add(T entity);
+        public Task<T> Add(T entity);
         public void Update(T entity);
         public void Delete(T entity);
     }

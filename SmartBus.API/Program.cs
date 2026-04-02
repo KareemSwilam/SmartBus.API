@@ -12,6 +12,8 @@ using SmartBus.Infrasturcture.Identity;
 using SmartBus.Infrasturcture.Persistence;
 using System.Text;
 using SmartBus.Infrasturcture.DependencyInjection;
+using SmartBus.Application.DependencyInjection;
+using Mapster;
 
 namespace SmartBus.API
 {
@@ -92,7 +94,9 @@ namespace SmartBus.API
                     ValidateLifetime = true,
                 };
             });
-            builder.Services.AddInfrastructure();   
+            builder.Services.AddInfrastructure();
+            builder.Services.AddApplicationMapping();
+            builder.Services.AddAplicationServices();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

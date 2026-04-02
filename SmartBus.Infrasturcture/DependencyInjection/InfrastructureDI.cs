@@ -11,8 +11,8 @@ namespace SmartBus.Infrasturcture.DependencyInjection
 {
     public static class InfrastructureDI
     {
-        public static void AddInfrastructure(this IServiceCollection services)
-            {
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        {
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddScoped<IBookingRepository, BookingRepository>();
                 services.AddScoped<IBusRepository, BusRepository>();
@@ -23,7 +23,7 @@ namespace SmartBus.Infrasturcture.DependencyInjection
                 services.AddScoped<ITicketRepository, TicketRepository>();
                 services.AddScoped<ITripRepository, TripRepository>();
                 services.AddScoped<ITripStopRepository, TripStopRepository>();
-
+            return services;
         }
 
     }
