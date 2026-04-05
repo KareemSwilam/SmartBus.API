@@ -9,13 +9,16 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Infrasturcture.Persistence.Configuration
 {
-    public class DeriverConfiiguration : IEntityTypeConfiguration<Dervier>
+    public class DeriverConfiiguration : IEntityTypeConfiguration<Driver>
     {
-        public void Configure(EntityTypeBuilder<Dervier> builder)
+        public void Configure(EntityTypeBuilder<Driver> builder)
         {
             builder.HasMany(d => d.Trips).WithOne(t => t.Dervier)
                    .HasForeignKey(t => t.DervierId)
                    .OnDelete(DeleteBehavior.Cascade);   
+            builder.HasMany(d => d.Reviews).WithOne()
+                   .HasForeignKey(r => r.TargetId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

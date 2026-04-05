@@ -185,8 +185,8 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<int>("ToStopOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -247,6 +247,10 @@ namespace SmartBus.Infrasturcture.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LogoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -260,18 +264,20 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("SmartBus.Domain.Models.Dervier", b =>
+            modelBuilder.Entity("SmartBus.Domain.Models.Driver", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -287,7 +293,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Derviers");
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Location", b =>
@@ -315,6 +321,38 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("SmartBus.Domain.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PassangerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Seat", b =>
@@ -359,8 +397,8 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<int>("ToStopOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -374,11 +412,9 @@ namespace SmartBus.Infrasturcture.Migrations
 
             modelBuilder.Entity("SmartBus.Domain.Models.Trip", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
@@ -392,8 +428,8 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DervierId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DervierId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("EndLocationId")
                         .HasColumnType("int");
@@ -442,8 +478,8 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<int>("StopOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -606,7 +642,7 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("SmartBus.Domain.Models.Dervier", b =>
+            modelBuilder.Entity("SmartBus.Domain.Models.Driver", b =>
                 {
                     b.HasOne("SmartBus.Domain.Models.Company", "Company")
                         .WithMany("Derviers")
@@ -615,6 +651,27 @@ namespace SmartBus.Infrasturcture.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SmartBus.Domain.Models.Review", b =>
+                {
+                    b.HasOne("SmartBus.Domain.Models.Company", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartBus.Domain.Models.Driver", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartBus.Domain.Models.Trip", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Seat", b =>
@@ -659,7 +716,7 @@ namespace SmartBus.Infrasturcture.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartBus.Domain.Models.Dervier", "Dervier")
+                    b.HasOne("SmartBus.Domain.Models.Driver", "Dervier")
                         .WithMany("Trips")
                         .HasForeignKey("DervierId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -727,11 +784,15 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.Navigation("Derviers");
 
+                    b.Navigation("Reviews");
+
                     b.Navigation("Trips");
                 });
 
-            modelBuilder.Entity("SmartBus.Domain.Models.Dervier", b =>
+            modelBuilder.Entity("SmartBus.Domain.Models.Driver", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("Trips");
                 });
 
@@ -745,6 +806,8 @@ namespace SmartBus.Infrasturcture.Migrations
             modelBuilder.Entity("SmartBus.Domain.Models.Trip", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Reviews");
 
                     b.Navigation("Tickects");
 

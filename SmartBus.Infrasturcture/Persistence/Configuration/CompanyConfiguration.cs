@@ -20,6 +20,9 @@ namespace SmartBus.Infrasturcture.Persistence.Configuration
                    .HasForeignKey(d => d.CompanyId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(c => c.Trips).WithOne(t => t.Company)
                    .HasForeignKey(t => t.CompanyId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(d => d.Reviews).WithOne()
+                   .HasForeignKey(r => r.TargetId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

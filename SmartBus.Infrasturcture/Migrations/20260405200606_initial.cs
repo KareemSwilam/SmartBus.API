@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SmartBus.Infrasturcture.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialAddingOfTable : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace SmartBus.Infrasturcture.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateAt = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
@@ -134,21 +135,21 @@ namespace SmartBus.Infrasturcture.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Derviers",
+                name: "Drivers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Derviers", x => x.Id);
+                    table.PrimaryKey("PK_Drivers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Derviers_Companies_CompanyId",
+                        name: "FK_Drivers_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -264,10 +265,9 @@ namespace SmartBus.Infrasturcture.Migrations
                 name: "Trips",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BusId = table.Column<int>(type: "int", nullable: false),
-                    DervierId = table.Column<int>(type: "int", nullable: false),
+                    DervierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -292,9 +292,9 @@ namespace SmartBus.Infrasturcture.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Trips_Derviers_DervierId",
+                        name: "FK_Trips_Drivers_DervierId",
                         column: x => x.DervierId,
-                        principalTable: "Derviers",
+                        principalTable: "Drivers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
@@ -302,13 +302,13 @@ namespace SmartBus.Infrasturcture.Migrations
                         column: x => x.EndLocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Trips_Locations_StartLocationId",
                         column: x => x.StartLocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -317,7 +317,7 @@ namespace SmartBus.Infrasturcture.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TripId = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FromStopOrdere = table.Column<int>(type: "int", nullable: false),
                     ToStopOrder = table.Column<int>(type: "int", nullable: false),
@@ -344,12 +344,47 @@ namespace SmartBus.Infrasturcture.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Rating = table.Column<double>(type: "float", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PassangerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    TargetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Review_Companies_TargetId",
+                        column: x => x.TargetId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Review_Drivers_TargetId",
+                        column: x => x.TargetId,
+                        principalTable: "Drivers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Review_Trips_TargetId",
+                        column: x => x.TargetId,
+                        principalTable: "Trips",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TripStops",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TripId = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoctionId = table.Column<int>(type: "int", nullable: false),
                     StopOrder = table.Column<int>(type: "int", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -372,7 +407,7 @@ namespace SmartBus.Infrasturcture.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TripId = table.Column<int>(type: "int", nullable: false),
+                    TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FromStopOrdere = table.Column<int>(type: "int", nullable: false),
                     ToStopOrder = table.Column<int>(type: "int", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: false),
@@ -455,9 +490,14 @@ namespace SmartBus.Infrasturcture.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Derviers_CompanyId",
-                table: "Derviers",
+                name: "IX_Drivers_CompanyId",
+                table: "Drivers",
                 column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Review_TargetId",
+                table: "Review",
+                column: "TargetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seats_BusId",
@@ -525,6 +565,9 @@ namespace SmartBus.Infrasturcture.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Review");
+
+            migrationBuilder.DropTable(
                 name: "Seats");
 
             migrationBuilder.DropTable(
@@ -549,7 +592,7 @@ namespace SmartBus.Infrasturcture.Migrations
                 name: "Buses");
 
             migrationBuilder.DropTable(
-                name: "Derviers");
+                name: "Drivers");
 
             migrationBuilder.DropTable(
                 name: "Locations");

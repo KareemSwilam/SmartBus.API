@@ -23,7 +23,10 @@ namespace SmartBus.Infrasturcture.Persistence.Configuration
             builder.HasMany(t => t.TripStops).WithOne(ts => ts.Trip)
                    .HasForeignKey(ts => ts.TripId)
                    .OnDelete(DeleteBehavior.Cascade);
-            
+            builder.HasMany(d => d.Reviews).WithOne()
+                   .HasForeignKey(r => r.TargetId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

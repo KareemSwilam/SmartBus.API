@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Domain.IRepository
 {
-    public interface IDervierRepository:IRepository<Dervier>    
+    public interface IDervierRepository:IRepository<Driver>    
     {
     }
 }

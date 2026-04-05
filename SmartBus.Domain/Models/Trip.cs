@@ -9,9 +9,9 @@ namespace SmartBus.Domain.Models
 {
     public class Trip
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int BusId { get; set; }
-        public int DervierId { get; set; }
+        public Guid DervierId { get; set; }
         public Guid CompanyId { get; set; }
 
         public DateTime DepartureTime { get; set; }
@@ -23,10 +23,11 @@ namespace SmartBus.Domain.Models
         public IEnumerable<TripStop> TripStops { get; set; }
         public IEnumerable<Booking> Bookings { get; set; }
         public IEnumerable<Tickect> Tickects { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
         public Location EndLocation { get; set; }
         public Location StartLocation { get; set; }
         public Bus Bus { get; set; }
-        public Dervier Dervier { get; set; }
+        public Driver Dervier { get; set; }
         public Company Company { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace SmartBus.Infrasturcture.Persistence
         }
         public DbSet<Location> Locations { get; set; }   
         public DbSet<Bus> Buses { get; set; }
-        public DbSet<Dervier> Derviers { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripStop> TripStops { get; set; }  
         public DbSet<Booking> Bookings { get; set; }

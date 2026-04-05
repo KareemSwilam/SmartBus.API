@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Infrasturcture.Repository
 {
-    public class DervierRepository:Repository<Dervier>, IDervierRepository  
+    public class DervierRepository:Repository<Driver>, IDervierRepository  
     {
         public DervierRepository(ApplicationContext contetxt):base(contetxt)
         {

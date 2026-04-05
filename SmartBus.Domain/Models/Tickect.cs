@@ -9,7 +9,7 @@ namespace SmartBus.Domain.Models
     public class Tickect
     {
         public int Id { get; set; }
-        public int TripId { get; set; } 
+        public Guid TripId { get; set; } 
         public int FromStopOrdere { get; set; }
         public int ToStopOrder { get; set; }
         public int BookingId { get; set; }
