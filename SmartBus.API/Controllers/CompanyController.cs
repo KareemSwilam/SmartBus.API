@@ -30,10 +30,6 @@ namespace SmartBus.API.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [HttpPost("TestFile")]
-        public Task<IActionResult> TestFile(IFormFile file)
-        {
-            return Task.FromResult<IActionResult>(Ok(file));
-        }
+        
     }
 }

@@ -19,6 +19,7 @@ namespace SmartBus.Domain.Models
         public int StartLocationId { get; set; }
         public int EndLocationId { get; set; }
         public double Price { get; set; }
+        public double AVGRating { get; set; }
         public TripStatus Status { get; set; }
         public IEnumerable<TripStop> TripStops { get; set; }
         public IEnumerable<Booking> Bookings { get; set; }

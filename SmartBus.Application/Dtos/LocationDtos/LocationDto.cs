@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SmartBus.Application.Dtos.LocationDtos
+{
+    public class LocationDto
+    {
+        public string Name { get; set; }
+        public string City { get; set; }
+    }
+}
