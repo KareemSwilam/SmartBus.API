@@ -16,6 +16,7 @@ namespace SmartBus.Application.DependencyInjection
         {
             services.AddScoped<IComapnyServices, CompanyServices>();
             services.AddScoped<IDriverServices, DriverServices>();
+            services.AddScoped<IBusServices, BusServices>();
             return services;
 
         }

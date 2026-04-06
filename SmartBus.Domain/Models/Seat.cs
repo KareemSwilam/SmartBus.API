@@ -13,5 +13,5 @@ namespace SmartBus.Domain.Models
         public int SeatNumber { get; set; }
         public Bus Bus { get; set; }
 
-}
+    }
 }

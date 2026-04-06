@@ -5,18 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartBus.Domain.Models
+namespace SmartBus.Application.Dtos.BusDtos
 {
-    public class Bus
+    public class CreateBusDto
     {
-        public int Id { get; set; }
         public Guid CompanyId { get; set; }
         public BusType Type { get; set; }
-        public int NumberSeats { get; set; }    
         public string PlateNumber { get; set; }
         public string BusNumber { get; set; }
-        public IEnumerable<Seat> Seats { get; set; }
-        public IEnumerable<Trip> Trips { get; set; }
-        public Company Company { get; set; }
+        public int SeatCount { get; set; }
     }
 }
