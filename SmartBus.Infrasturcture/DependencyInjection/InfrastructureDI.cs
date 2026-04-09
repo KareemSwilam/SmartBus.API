@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartBus.Application.IServices;
 using SmartBus.Domain.IRepository;
+using SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExternalServices;
 using SmartBus.Infrasturcture.Repository;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace SmartBus.Infrasturcture.DependencyInjection
                 services.AddScoped<ITicketRepository, TicketRepository>();
                 services.AddScoped<ITripRepository, TripRepository>();
                 services.AddScoped<ITripStopRepository, TripStopRepository>();
+                services.AddScoped<ILocationServices, LocationServices>();
             return services;
         }
 

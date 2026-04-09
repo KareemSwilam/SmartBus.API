@@ -1,19 +1,20 @@
 
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using Swashbuckle.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SmartBus.Application.DependencyInjection;
+using SmartBus.Infrasturcture.DependencyInjection;
+using SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExternalServices;
 using SmartBus.Infrasturcture.Identity;
 using SmartBus.Infrasturcture.Persistence;
+using Swashbuckle.AspNetCore;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
-using SmartBus.Infrasturcture.DependencyInjection;
-using SmartBus.Application.DependencyInjection;
-using Mapster;
 
 namespace SmartBus.API
 {
@@ -97,6 +98,12 @@ namespace SmartBus.API
             builder.Services.AddInfrastructure();
             builder.Services.AddApplicationMapping();
             builder.Services.AddAplicationServices();
+            builder.Services.AddHttpClient("GooglePlaces", client =>
+            {
+                client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/search?");
+            });
+            builder.Services.Configure<LocationAPISetting>(
+                    builder.Configuration.GetSection("PlacesAPI"));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -26,6 +26,12 @@ namespace SmartBus.Infrasturcture.Repository
             return result.Entity;
         }
 
+        public async void AddRange(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            
+        }
+
         public void Delete(T entity)
         {
             _dbSet.Remove(entity);  

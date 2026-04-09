@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SmartBus.Application.DependencyInjection
 {
     public static class ServicesInjection
@@ -17,6 +18,7 @@ namespace SmartBus.Application.DependencyInjection
             services.AddScoped<IComapnyServices, CompanyServices>();
             services.AddScoped<IDriverServices, DriverServices>();
             services.AddScoped<IBusServices, BusServices>();
+            
             return services;
 
         }
