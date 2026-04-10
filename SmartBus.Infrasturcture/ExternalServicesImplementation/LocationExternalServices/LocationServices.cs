@@ -36,6 +36,7 @@ namespace SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExterna
         {
             var client = _httpClientFactory.CreateClient();
 
+            
             var dbLocations = await _unit.LocationRepository
                 .GetAll(l => l.Name.ToLower() == name.ToLower());
 
@@ -45,6 +46,7 @@ namespace SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExterna
                 return CustomResult<List<LocationDto>>.Success(dto);
             }
 
+            
             client.DefaultRequestHeaders.UserAgent.ParseAdd("SmartBusApp");
 
             var response = await client.GetAsync(
@@ -60,42 +62,77 @@ namespace SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExterna
                 return CustomResult<List<LocationDto>>.Failure(
                     CustomError.NotFound("No locations found."));
 
+            
             var osmIds = apiResults.Select(r => r.place_id).ToList();
+            var latLonList = apiResults.Select(r => new { r.lat, r.lon }).ToList();
 
-            var existingLocations = await _unit.LocationRepository
+            
+            var existingById = await _unit.LocationRepository
                 .GetAll(l => osmIds.Contains(l.OpenStreetMapId));
 
-            var existingDict = existingLocations.ToDictionary(l => l.OpenStreetMapId);
+            
+            var minLat = latLonList.Min(v => double.Parse(v.lat)) - 0.001;
+            var maxLat = latLonList.Max(v => double.Parse(v.lat)) + 0.001;
+
+            var minLon = latLonList.Min(v => double.Parse(v.lon)) - 0.001;
+            var maxLon = latLonList.Max(v => double.Parse(v.lon)) + 0.001;
+            var existingByCoords = await _unit.LocationRepository.GetAll(l =>
+                l.Latitude >= minLat &&l.Latitude <= maxLat &&
+                l.Longitude >= minLon && l.Longitude <= maxLon);
+
+            
+            
 
             var newLocations = new List<Location>();
 
             foreach (var item in apiResults)
             {
-                if (!existingDict.ContainsKey(item.place_id))
+                bool existsById = existingById
+                    .Any(l => l.OpenStreetMapId == item.place_id);
+
+                bool existsByCoordinates = existingByCoords
+                    .Any(l => IsSameLocation(l.Latitude, l.Longitude, double.Parse(item.lat), double.Parse(item.lon)));
+
+                if (!existsById && !existsByCoordinates)
                 {
                     newLocations.Add(new Location
                     {
                         Name = item.name.ToLower(),
-                        Latitude = item.lat,
-                        Longitude = item.lon,
-                        City = item.Address.city,
+                        Latitude = Math.Round(double.Parse(item.lat), 6),
+                        Longitude = Math.Round(double.Parse(item.lon), 6),
+                        City = item.Address?.city
+                                ?? item.Address?.town
+                                ?? item.Address?.village,                                
                         OpenStreetMapId = item.place_id
                     });
                 }
             }
 
+            // 7. Save new locations
             if (newLocations.Any())
             {
                 _unit.LocationRepository.AddRange(newLocations);
                 await _unit.SaveAsync();
             }
 
-            var finalLocations = existingLocations.Concat(newLocations).ToList();
+            // 8. Merge results
+            var finalLocations = existingById
+                .Concat(existingByCoords)
+                .Concat(newLocations)
+                .DistinctBy(l => l.OpenStreetMapId)
+                .ToList();
 
             var result = _mapper.Map<List<LocationDto>>(finalLocations);
 
             return CustomResult<List<LocationDto>>.Success(result);
-
-        }     
-    }
+        }
+        bool IsSameLocation(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double tolerance = 0.0001; // ~10 meters
+            return Math.Abs(lat1 - lat2) < tolerance &&
+                   Math.Abs(lon1 - lon2) < tolerance;
+        }
+    }  
+        
+    
 }
