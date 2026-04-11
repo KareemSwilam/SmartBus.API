@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartBus.Infrasturcture.Persistence;
 
@@ -11,9 +12,11 @@ using SmartBus.Infrasturcture.Persistence;
 namespace SmartBus.Infrasturcture.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20260411213948_FixLocationRelation")]
+    partial class FixLocationRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,7 +201,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Bus", b =>
@@ -230,7 +233,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Buses", (string)null);
+                    b.ToTable("Buses");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Company", b =>
@@ -266,7 +269,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Driver", b =>
@@ -300,7 +303,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Location", b =>
@@ -329,7 +332,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Review", b =>
@@ -361,7 +364,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Seat", b =>
@@ -382,7 +385,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("BusId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Tickect", b =>
@@ -416,7 +419,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Tickects", (string)null);
+                    b.ToTable("Tickects");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Trip", b =>
@@ -467,7 +470,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("StartLocationId");
 
-                    b.ToTable("Trips", (string)null);
+                    b.ToTable("Trips");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.TripStop", b =>
@@ -499,7 +502,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("TripStops", (string)null);
+                    b.ToTable("TripStops");
                 });
 
             modelBuilder.Entity("SmartBus.Infrasturcture.Identity.ApplicationUser", b =>

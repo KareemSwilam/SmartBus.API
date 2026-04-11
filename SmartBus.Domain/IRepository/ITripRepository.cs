@@ -11,5 +11,6 @@ namespace SmartBus.Domain.IRepository
     {
         public Task<Trip> GetWithDetails(Guid id);
         public Task<List<Trip>> GetAllWithDetails(int? StartLocationId, int? EndLocationId, DateTime? DepartureTime,DateTime? ArrivalTime);
+        public Task<Trip> GetTripWithStops(Guid id);
     }
 }

@@ -35,6 +35,19 @@ namespace SmartBus.Infrasturcture.Repository
             return await trip.ToListAsync();
         }
 
+        public async Task<Trip> GetTripWithStops(Guid id)
+        {
+            var trip = await _dbSet.Where(t => t.Id == id)
+                                   .Include(t => t.Bus)
+                                   .Include(t => t.Dervier)
+                                   .Include(t => t.Company)
+                                   .Include(t => t.StartLocation)
+                                   .Include(t => t.EndLocation)
+                                   .Include(t => t.TripStops)
+                                   .ThenInclude(ts => ts.Location).FirstOrDefaultAsync();
+            return trip;
+        }
+
         public async Task<Trip> GetWithDetails(Guid id)
         {
             var trip = await _dbSet.Where(t => t.Id == id)
