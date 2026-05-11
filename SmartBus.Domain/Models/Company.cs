@@ -16,6 +16,7 @@ namespace SmartBus.Domain.Models
         public string? LogoUrl { get; set; }
         public double AVGRating { get; set; }
         public DateOnly CreateAt { get; set; }
+        public bool IsBlocked { get; set; } 
         public IEnumerable<Driver>  Derviers { get; set; }
         public IEnumerable<Bus> Buses { get; set; }
         public IEnumerable<Trip> Trips { get; set; }

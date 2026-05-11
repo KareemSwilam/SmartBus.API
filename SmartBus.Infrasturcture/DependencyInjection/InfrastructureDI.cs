@@ -25,6 +25,7 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddScoped<ITripStopRepository, TripStopRepository>();
             services.AddScoped<ILocationServices, LocationServices>();
             services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+            services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();
             services.AddOptions<MailkitSetting>().Bind(configuration.GetSection(MailkitSetting.Name));
             services.AddScoped<ISendingEmailService,SendingEmailService>(); 

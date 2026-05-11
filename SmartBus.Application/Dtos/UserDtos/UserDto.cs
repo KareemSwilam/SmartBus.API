@@ -12,5 +12,7 @@ namespace SmartBus.Application.Dtos.UserDtos
         public string UserName { get; set; }
         public string Email { get; set; }
         public bool IsCompany { get; set; }
+        public Guid? CompanyId { get; set; }
+
     }
 }

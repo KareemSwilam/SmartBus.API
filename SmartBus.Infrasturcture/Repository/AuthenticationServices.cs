@@ -245,7 +245,8 @@ namespace SmartBus.Infrasturcture.Repository
                 Id = userExist!.Id,
                 UserName = userExist.UserName!,
                 Email = userExist.Email!,
-                IsCompany = userExist.IsCompany
+                IsCompany = userExist.IsCompany,
+                CompanyId = userExist.CompanyId,
             };
             return CustomResult<UserDto>.Success(User);
 
