@@ -1,31 +1,33 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SmartBus.Application.IExternalServices;
 using SmartBus.Application.IServices;
 using SmartBus.Domain.IRepository;
+using SmartBus.Infrasturcture.ExternalServices.MailExternalServices;
 using SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExternalServices;
 using SmartBus.Infrasturcture.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartBus.Infrasturcture.DependencyInjection
 {
     public static class InfrastructureDI
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-                services.AddScoped<IUnitOfWork, UnitOfWork>();
-                services.AddScoped<IBookingRepository, BookingRepository>();
-                services.AddScoped<IBusRepository, BusRepository>();
-                services.AddScoped<ICompanyRepository, CompanyRepository>();
-                services.AddScoped<IDervierRepository, DervierRepository>();
-                services.AddScoped<ILocationRepository, LocationRepository>();
-                services.AddScoped<ISeatRepository, SeatRepository>();
-                services.AddScoped<ITicketRepository, TicketRepository>();
-                services.AddScoped<ITripRepository, TripRepository>();
-                services.AddScoped<ITripStopRepository, TripStopRepository>();
-                services.AddScoped<ILocationServices, LocationServices>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<IBusRepository, BusRepository>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IDervierRepository, DervierRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<ISeatRepository, SeatRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<ITripRepository, TripRepository>();
+            services.AddScoped<ITripStopRepository, TripStopRepository>();
+            services.AddScoped<ILocationServices, LocationServices>();
+            services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+            services.AddScoped<IRoleServices, RoleServices>();
+            services.AddOptions<MailkitSetting>().Bind(configuration.GetSection(MailkitSetting.Name));
+            services.AddScoped<ISendingEmailService,SendingEmailService>(); 
             return services;
         }
 

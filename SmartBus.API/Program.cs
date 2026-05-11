@@ -95,7 +95,7 @@ namespace SmartBus.API
                     ValidateLifetime = true,
                 };
             });
-            builder.Services.AddInfrastructure();
+            builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplicationMapping();
             builder.Services.AddAplicationServices();
             builder.Services.AddHttpClient("GooglePlaces", client =>
