@@ -12,8 +12,8 @@ namespace SmartBus.Domain.Models
         public int Id { get; set; }
         public Guid TripId { get; set; }
         public string UserId { get; set; }
-        public int FromStopOrdere { get; set; }
-        public int ToStopOrder { get; set; }
+        public int StartLocationId { get; set; }
+        public int EndLocationId { get; set; }
         public DateTime BookingDate { get; set; }
         public double Price { get; set; }
         public BookingStatus Status { get; set; }

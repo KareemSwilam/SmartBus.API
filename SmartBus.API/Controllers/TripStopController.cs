@@ -22,5 +22,13 @@ namespace SmartBus.API.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [HttpGet("TripWithStops")]
+        public async Task<IActionResult> TripWithStops(Guid TripId)
+        {
+            var result = await _tripStopsServices.TripWithStops(TripId);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
     }
 }

@@ -32,9 +32,9 @@ namespace SmartBus.API.Controllers
             return Ok(result);
         }
         [HttpGet("GetAllTrips")]
-        public async Task<IActionResult> GetAllTrips([FromQuery] TripSearchDto searchDto)
+        public async Task<IActionResult> GetAllTrips([FromQuery] TripPaginationParams @params)
         {
-            var result = await _tripServices.GetAllTrips(searchDto);
+            var result = await _tripServices.GetAllTrips(@params);
             if (!result.IsSuccess)
                 return BadRequest(result);
             return Ok(result);

@@ -55,5 +55,13 @@ namespace SmartBus.Application.Services
             var result = _mapper.Map<TripWithStops>(trip);
             return CustomResult<TripWithStops>.Success(result);
         }
+        public async Task<CustomResult<TripWithStops>> TripWithStops(Guid id)
+        {
+            var trip = await _unitOfWork.TripRepository.GetTripWithStops(id);
+            if (trip == null)
+                CustomResult<TripWithStops>.Failure(CustomError.NotFound("Trip Not Exist"));
+            var result = _mapper.Map<TripWithStops>(trip!);
+            return CustomResult<TripWithStops>.Success(result);
+        }
     }
 }

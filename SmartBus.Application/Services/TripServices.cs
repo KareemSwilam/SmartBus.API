@@ -4,6 +4,7 @@ using SmartBus.Application.IServices;
 using SmartBus.Application.Result;
 using SmartBus.Domain.IRepository;
 using SmartBus.Domain.Models;
+using SmartBus.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -48,11 +49,14 @@ namespace SmartBus.Application.Services
             return CustomResult<TripDto>.Success(TripDto);
         }
 
-        public async Task<CustomResult<List<TripDto>>> GetAllTrips(TripSearchDto searchDto)
+        public async Task<CustomResult<PaginationResult<TripWithStops>>> GetAllTrips(TripPaginationParams @params)
         {
-            var Trips = await _unit.TripRepository.GetAllWithDetails(searchDto.StartLocationId, searchDto.EndLocationId, searchDto.DepartureTime, searchDto.ArrivalTime);
-            var TripsDto = _mapper.Map<List<TripDto>>(Trips);
-            return CustomResult<List<TripDto>>.Success(TripsDto);   
+            var Trips = await _unit.TripRepository.GetAllWithDetails(@params.PageNumber,@params.PageSize,
+                                                            @params.Search.StartLocationId, @params.Search.EndLocationId,
+                                                            @params.Search.DepartureTime, @params.Search.ArrivalTime);
+            var result = new PaginationResult<TripWithStops>(_mapper.Map<List<TripWithStops>>(Trips.Items), Trips.TotalCount, Trips.PageNumber, Trips.PageSize);
+           
+            return CustomResult<PaginationResult<TripWithStops>>.Success(result);   
         }
 
         public async Task<CustomResult<TripDetailsDto>> GetTrip(Guid Id)

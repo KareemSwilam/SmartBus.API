@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartBus.Domain.IRepository;
 using SmartBus.Domain.Models;
+using SmartBus.Domain.ValueObject;
 using SmartBus.Infrasturcture.Persistence;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace SmartBus.Infrasturcture.Repository
             
         }
 
-        public async Task<List<Trip>> GetAllWithDetails(int? StartLocationId, int? EndLocationId, DateTime? DepartureTime, DateTime? ArrivalTime)
+        public async Task<PaginationResult<Trip>> GetAllWithDetails(int pageNumber, int pageSize,int? StartLocationId, int? EndLocationId, DateTime? DepartureTime, DateTime? ArrivalTime)
         {
             IQueryable<Trip>  trip = _dbSet;
-            if(StartLocationId > 0)
-                trip = trip.Where(t => t.StartLocationId == StartLocationId);
+            
+            
+            if (StartLocationId > 0)
+                trip = trip.Where(t => t.StartLocationId == StartLocationId || t.TripStops.Any(ts => ts.LocationId == StartLocationId));
             
             if(EndLocationId > 0)
                 trip = trip.Where(t => t.EndLocationId == EndLocationId);
@@ -29,10 +32,16 @@ namespace SmartBus.Infrasturcture.Repository
                 trip = trip.Where(t => t.DepartureTime <= DepartureTime.Value);
             if (ArrivalTime != null)
                 trip = trip.Where(t => t.ArrivalTime >= ArrivalTime.Value);
+            var Count = trip.Count();
             trip = trip.Include(t => t.StartLocation)
-                       .Include(t => t.EndLocation);
-
-            return await trip.ToListAsync();
+                       .Include(t => t.EndLocation)
+                       .Include(t => t.TripStops);
+            var result = await trip.OrderByDescending(t => t.DepartureTime)
+                             .Skip(pageSize*(pageNumber - 1))
+                             .Take(pageSize)
+                             .ToListAsync();
+            
+            return new PaginationResult<Trip>(result, Count, pageNumber, pageSize);
         }
 
         public async Task<Trip> GetTripWithStops(Guid id)
