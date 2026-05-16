@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SmartBus.Application.DependencyInjection;
 using SmartBus.Infrasturcture.DependencyInjection;
-using SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExternalServices;
+
 using SmartBus.Infrasturcture.Identity;
 using SmartBus.Infrasturcture.Persistence;
 using Swashbuckle.AspNetCore;
@@ -102,8 +102,7 @@ namespace SmartBus.API
             {
                 client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/search?");
             });
-            builder.Services.Configure<LocationAPISetting>(
-                    builder.Configuration.GetSection("PlacesAPI"));
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

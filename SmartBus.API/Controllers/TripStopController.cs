@@ -15,9 +15,9 @@ namespace SmartBus.API.Controllers
             _tripStopsServices = tripStopsServices;
         }
         [HttpPost("AddStop")]
-        public async Task<IActionResult> AddingStop(AddingStopDto dto)
+        public async Task<IActionResult> AddingStop(AddingStopRequestDto dto)
         {
-            var result = await _tripStopsServices.AddingStop(dto);
+            var result = await _tripStopsServices.AddingStops(dto);
             if (!result.IsSuccess)
                 return BadRequest(result);
             return Ok(result);

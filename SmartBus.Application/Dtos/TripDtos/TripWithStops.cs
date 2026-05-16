@@ -10,6 +10,7 @@ namespace SmartBus.Application.Dtos.TripDtos
 {
     public class TripWithStops
     {
+        public Guid Id { get; set; }
         public LocationDto StartLocation { get; set; }
         public LocationDto EndLocation { get; set; }
         public DateTime DepartureTime { get; set; }

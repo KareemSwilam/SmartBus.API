@@ -13,10 +13,10 @@ namespace SmartBus.API.Controllers
         {
             _locationServices = locationServices;
         }
-        [HttpGet("GetLocationsByName")]
-        public async Task<IActionResult> GetLocationsByName(string name)
+        [HttpGet("Locations")]
+        public async Task<IActionResult> Locations(string? name)
         {
-            var result = await _locationServices.GetLocationsByName(name);
+            var result = await _locationServices.GetLocations(name);
 
             if (result.IsSuccess)
             {

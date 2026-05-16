@@ -11,7 +11,7 @@ namespace SmartBus.Application.IServices
 {
     public interface ITripStopsServices
     {
-        public Task<CustomResult<TripWithStops>> AddingStop(AddingStopDto dto);
+        public Task<CustomResult<TripWithStops>> AddingStops(AddingStopRequestDto dto);
         public Task<CustomResult<TripWithStops>> TripWithStops(Guid id);
     }
 }

@@ -40,8 +40,35 @@ namespace SmartBus.Application.Services
             var EndLocationExist = await _unit.LocationRepository.Get(L => L.Id == dto.EndLocationId);
             if (EndLocationExist == null)
                 return CustomResult<TripDto>.Failure(CustomError.NotFound("End Location Not Found"));
+            if (dto.StartLocationId == dto.EndLocationId)
+                return CustomResult<TripDto>.Failure(CustomError.InvalidInput("Start And End Location Cannot Be Same"));
+            if (dto.DepartureTime >= dto.ArrivalTime)            
+                return CustomResult<TripDto>.Failure(CustomError.InvalidInput("Arrival Time Must Be After Departure Time"));
+           
             var Trip = _mapper.Map<Trip>(dto);
             await _unit.TripRepository.Add(Trip);
+            
+            var startStop = new TripStop
+            {
+                Trip = Trip,
+                LocationId = Trip.StartLocationId,
+                StopOrder = 1,
+                DepatureTime = Trip.DepartureTime,
+                IsStartStop = true,
+                IsEndStop = false
+            };
+
+            var endStop = new TripStop
+            {
+                Trip = Trip,
+                LocationId = Trip.EndLocationId,
+                StopOrder = 2,
+                ArrivalTime = Trip.ArrivalTime,
+                IsStartStop = false,
+                IsEndStop = true
+            };
+            await _unit.TripStopRepository.Add(startStop);
+            await _unit.TripStopRepository.Add(endStop);
             var complete = await _unit.SaveAsync();
             if (complete<1)
                 return CustomResult<TripDto>.Failure(CustomError.ServerError("Failed To Add Trip"));
@@ -64,8 +91,13 @@ namespace SmartBus.Application.Services
             var Trip = await _unit.TripRepository.GetWithDetails(Id);
             if (Trip == null)
                 return CustomResult<TripDetailsDto>.Failure(CustomError.NotFound("Trip Not Found"));
-            var TripDto = _mapper.Map<TripDetailsDto>(Trip);   
+            var TripDto = _mapper.Map<TripDetailsDto>(Trip);
             return CustomResult<TripDetailsDto>.Success(TripDto);
+        }
+        
+        public Task<CustomResult> GetFreeSeat(Guid TripId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

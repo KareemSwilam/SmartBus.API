@@ -13,5 +13,6 @@ namespace SmartBus.Domain.IRepository
         public Task<Trip> GetWithDetails(Guid id);
         public Task<PaginationResult<Trip>> GetAllWithDetails(int pageNumber, int pageSize, int? StartLocationId, int? EndLocationId, DateTime? DepartureTime,DateTime? ArrivalTime);
         public Task<Trip> GetTripWithStops(Guid id);
+       // public Task<Trip> GetFreeSeats(Guid id, int? StartLocationId, int? EndLocationId);
     }
 }

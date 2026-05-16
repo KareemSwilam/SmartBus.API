@@ -13,7 +13,7 @@ namespace SmartBus.Domain.Models
         public string? City { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public int OpenStreetMapId { get; set; }
+        
         public IEnumerable<Trip> StartTripsHere { get; set; }
         public IEnumerable<Trip> EndTripsHere { get; set; }
     }

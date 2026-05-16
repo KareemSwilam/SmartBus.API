@@ -27,7 +27,7 @@ namespace SmartBus.Infrasturcture.Repository
                 trip = trip.Where(t => t.StartLocationId == StartLocationId || t.TripStops.Any(ts => ts.LocationId == StartLocationId));
             
             if(EndLocationId > 0)
-                trip = trip.Where(t => t.EndLocationId == EndLocationId);
+                trip = trip.Where(t => t.EndLocationId == EndLocationId || t.TripStops.Any(ts => ts.LocationId == EndLocationId));
             if (DepartureTime != null)
                 trip = trip.Where(t => t.DepartureTime <= DepartureTime.Value);
             if (ArrivalTime != null)
@@ -35,7 +35,13 @@ namespace SmartBus.Infrasturcture.Repository
             var Count = trip.Count();
             trip = trip.Include(t => t.StartLocation)
                        .Include(t => t.EndLocation)
-                       .Include(t => t.TripStops);
+                       .Include(t => t.Company)
+                       .Include(t => t.Bus)
+                       .Include(t => t.Dervier)
+                       .Include(t => t.TripStops)
+                       .ThenInclude(ts => ts.Location)
+                       .AsSplitQuery()
+                       .AsNoTracking();
             var result = await trip.OrderByDescending(t => t.DepartureTime)
                              .Skip(pageSize*(pageNumber - 1))
                              .Take(pageSize)
@@ -53,7 +59,9 @@ namespace SmartBus.Infrasturcture.Repository
                                    .Include(t => t.StartLocation)
                                    .Include(t => t.EndLocation)
                                    .Include(t => t.TripStops)
-                                   .ThenInclude(ts => ts.Location).FirstOrDefaultAsync();
+                                   .ThenInclude(ts => ts.Location)
+                                   .AsSplitQuery()
+                                   .AsNoTracking().FirstOrDefaultAsync();
             return trip;
         }
 
@@ -68,5 +76,13 @@ namespace SmartBus.Infrasturcture.Repository
                                    
             return trip;
         }
+        //public async Task<Trip> GetFreeSeats(Guid id, int? StartLocationId, int? EndLocationId)
+        //{
+        //    var query =  _dbSet.Where(t => t.Id == id);
+        //    if(StartLocationId != 0)
+        //    {
+
+        //    }
+        //}
     }
 }

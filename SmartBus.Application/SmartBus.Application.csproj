@@ -15,8 +15,4 @@
     <ProjectReference Include="..\SmartBus.Domain\SmartBus.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\BookingDtos\" />
-  </ItemGroup>
-
 </Project>

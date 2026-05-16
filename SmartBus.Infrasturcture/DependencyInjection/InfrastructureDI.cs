@@ -4,7 +4,7 @@ using SmartBus.Application.IExternalServices;
 using SmartBus.Application.IServices;
 using SmartBus.Domain.IRepository;
 using SmartBus.Infrasturcture.ExternalServices.MailExternalServices;
-using SmartBus.Infrasturcture.ExternalServicesImplementation.LocationExternalServices;
+
 using SmartBus.Infrasturcture.Repository;
 
 namespace SmartBus.Infrasturcture.DependencyInjection
@@ -23,7 +23,8 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<ITripStopRepository, TripStopRepository>();
-            services.AddScoped<ILocationServices, LocationServices>();
+            services.AddScoped<IReservedSeatRepository, ReservedSeatRepository>();
+            services.AddScoped<IStopSegmentRepository,StopSegmentRepository>();
             services.AddScoped<IAuthenticationServices, AuthenticationServices>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();

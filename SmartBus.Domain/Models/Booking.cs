@@ -18,7 +18,7 @@ namespace SmartBus.Domain.Models
         public double Price { get; set; }
         public BookingStatus Status { get; set; }
         public Trip Trip { get; set; }
-        public Tickect Tickect { get; set; }    
-        public string SeatNumber { get; set; }
+        public Tickect Ticket { get; set; }    
+        public int SeatNumber { get; set; }
     }
 }

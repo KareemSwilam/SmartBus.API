@@ -20,7 +20,8 @@ namespace SmartBus.Application.DependencyInjection
             services.AddScoped<IBusServices, BusServices>();
             services.AddScoped<ITripServices, TripServices>();  
             services.AddScoped<ITripStopsServices, TripStopsServices>();
-
+            services.AddScoped<ILocationServices, LocationServices>();
+            services.AddScoped<IBookingServices, BookingServices>();
             return services;
 
         }

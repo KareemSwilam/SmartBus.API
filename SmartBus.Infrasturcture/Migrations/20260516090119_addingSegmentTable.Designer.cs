@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartBus.Infrasturcture.Persistence;
 
@@ -11,9 +12,11 @@ using SmartBus.Infrasturcture.Persistence;
 namespace SmartBus.Infrasturcture.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20260516090119_addingSegmentTable")]
+    partial class addingSegmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -487,19 +490,23 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FromStopOrder")
+                    b.Property<int>("FromStopId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ToStopOrder")
+                    b.Property<int>("ToStopId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("TripId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FromStopId");
+
+                    b.HasIndex("ToStopId");
 
                     b.HasIndex("TripId");
 
@@ -855,11 +862,27 @@ namespace SmartBus.Infrasturcture.Migrations
 
             modelBuilder.Entity("SmartBus.Domain.Models.StopSegment", b =>
                 {
+                    b.HasOne("SmartBus.Domain.Models.TripStop", "FromStop")
+                        .WithMany()
+                        .HasForeignKey("FromStopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartBus.Domain.Models.TripStop", "ToStop")
+                        .WithMany()
+                        .HasForeignKey("ToStopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SmartBus.Domain.Models.Trip", "Trip")
                         .WithMany()
                         .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FromStop");
+
+                    b.Navigation("ToStop");
 
                     b.Navigation("Trip");
                 });

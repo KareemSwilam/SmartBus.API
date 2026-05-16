@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Domain.IRepository
 {
-    public interface IBusRepository:IRepository<Bus>
+    public interface IStopSegmentRepository:IRepository<StopSegment>
     {
-        public Task<Bus> GetBusWithSeat(int BusId);
+        public Task<double> GetPriceForSegment(Guid tripId, int fromStopOrder, int toStopOrder);
     }
 }

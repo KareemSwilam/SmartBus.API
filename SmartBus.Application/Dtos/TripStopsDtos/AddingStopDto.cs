@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Application.Dtos.TripStopsDtos
 {
-    public  class AddingStopDto
+    public class AddingStopDto
     {
-        public Guid TripId { get; set; }
-        public int LocationId { get; set; }
         public int StopOrder { get; set; }
+        public int LocationId { get; set; }
         public DateTime ArrivalTime { get; set; }
         public DateTime DepatureTime { get; set; }
     }

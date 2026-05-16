@@ -29,6 +29,8 @@ namespace SmartBus.Infrasturcture.Repository
         public ITripRepository TripRepository { get; private set; }
 
         public ITripStopRepository TripStopRepository { get; private set; }
+        public IStopSegmentRepository StopSegmentRepository { get; private set; }
+        public IReservedSeatRepository ReservedSeatRepository { get; private set; }
         public UnitOfWork(ApplicationContext context,
             IBookingRepository bookingRepository,
             IBusRepository busRepository, 
@@ -38,7 +40,10 @@ namespace SmartBus.Infrasturcture.Repository
             ISeatRepository seatRepository,
             ITicketRepository ticketRepository,
             ITripRepository tripRepository,
-            ITripStopRepository tripStopRepository)
+            ITripStopRepository tripStopRepository, 
+            IStopSegmentRepository stopSegmentRepository,
+            IReservedSeatRepository reservedSeatRepository
+            )
         {
             BookingRepository = bookingRepository;
             BusRepository = busRepository;
@@ -50,7 +55,10 @@ namespace SmartBus.Infrasturcture.Repository
             TripStopRepository = tripStopRepository;
             TripRepository = tripRepository;
             _context = context;
-            
+            StopSegmentRepository = stopSegmentRepository;
+            ReservedSeatRepository = reservedSeatRepository;
+
+
         }
         public async Task<int> SaveAsync()
         {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartBus.Infrasturcture.Persistence;
 
@@ -11,9 +12,11 @@ using SmartBus.Infrasturcture.Persistence;
 namespace SmartBus.Infrasturcture.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20260515222253_RenameColumnsinReserved")]
+    partial class RenameColumnsinReserved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -479,33 +482,6 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.ToTable("Seats");
                 });
 
-            modelBuilder.Entity("SmartBus.Domain.Models.StopSegment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FromStopOrder")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ToStopOrder")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TripId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TripId");
-
-                    b.ToTable("StopSegments");
-                });
-
             modelBuilder.Entity("SmartBus.Domain.Models.Tickect", b =>
                 {
                     b.Property<int>("Id")
@@ -851,17 +827,6 @@ namespace SmartBus.Infrasturcture.Migrations
                         .IsRequired();
 
                     b.Navigation("Bus");
-                });
-
-            modelBuilder.Entity("SmartBus.Domain.Models.StopSegment", b =>
-                {
-                    b.HasOne("SmartBus.Domain.Models.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Tickect", b =>

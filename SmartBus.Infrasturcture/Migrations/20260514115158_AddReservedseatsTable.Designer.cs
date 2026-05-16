@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartBus.Infrasturcture.Persistence;
 
@@ -11,9 +12,11 @@ using SmartBus.Infrasturcture.Persistence;
 namespace SmartBus.Infrasturcture.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20260514115158_AddReservedseatsTable")]
+    partial class AddReservedseatsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,8 +178,9 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("SeatNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("SeatNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartLocationId")
                         .HasColumnType("int");
@@ -326,6 +330,9 @@ namespace SmartBus.Infrasturcture.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OpenStreetMapId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
@@ -403,13 +410,13 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Property<int>("BusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EndStopOrder")
+                    b.Property<int>("EndLocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StartStopOrder")
+                    b.Property<int>("StartLocationId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("TripId")
@@ -419,7 +426,11 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.HasIndex("BusId");
 
+                    b.HasIndex("EndLocationId");
+
                     b.HasIndex("SeatId");
+
+                    b.HasIndex("StartLocationId");
 
                     b.HasIndex("TripId");
 
@@ -477,33 +488,6 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.HasIndex("BusId");
 
                     b.ToTable("Seats");
-                });
-
-            modelBuilder.Entity("SmartBus.Domain.Models.StopSegment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FromStopOrder")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ToStopOrder")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TripId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TripId");
-
-                    b.ToTable("StopSegments");
                 });
 
             modelBuilder.Entity("SmartBus.Domain.Models.Tickect", b =>
@@ -599,17 +583,11 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("ArrivalTime")
+                    b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DepatureTime")
+                    b.Property<DateTime>("DepatureTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsEndStop")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsStartStop")
-                        .HasColumnType("bit");
 
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
@@ -802,9 +780,21 @@ namespace SmartBus.Infrasturcture.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SmartBus.Domain.Models.Location", "EndLocation")
+                        .WithMany()
+                        .HasForeignKey("EndLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SmartBus.Domain.Models.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartBus.Domain.Models.Location", "StartLocation")
+                        .WithMany()
+                        .HasForeignKey("StartLocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -816,7 +806,11 @@ namespace SmartBus.Infrasturcture.Migrations
 
                     b.Navigation("Bus");
 
+                    b.Navigation("EndLocation");
+
                     b.Navigation("Seat");
+
+                    b.Navigation("StartLocation");
 
                     b.Navigation("Trip");
                 });
@@ -853,21 +847,10 @@ namespace SmartBus.Infrasturcture.Migrations
                     b.Navigation("Bus");
                 });
 
-            modelBuilder.Entity("SmartBus.Domain.Models.StopSegment", b =>
-                {
-                    b.HasOne("SmartBus.Domain.Models.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
-                });
-
             modelBuilder.Entity("SmartBus.Domain.Models.Tickect", b =>
                 {
                     b.HasOne("SmartBus.Domain.Models.Booking", "Booking")
-                        .WithOne("Ticket")
+                        .WithOne("Tickect")
                         .HasForeignKey("SmartBus.Domain.Models.Tickect", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -954,7 +937,7 @@ namespace SmartBus.Infrasturcture.Migrations
 
             modelBuilder.Entity("SmartBus.Domain.Models.Booking", b =>
                 {
-                    b.Navigation("Ticket")
+                    b.Navigation("Tickect")
                         .IsRequired();
                 });
 

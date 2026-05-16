@@ -14,7 +14,7 @@ namespace SmartBus.Application.IServices
         public Task<CustomResult<TripDto>> AddTrip(CreateTripDto dto);
         public Task<CustomResult<TripDetailsDto>> GetTrip(Guid Id);
         public Task<CustomResult<PaginationResult<TripWithStops>>> GetAllTrips(TripPaginationParams @params);
-        
+        public Task<CustomResult> GetFreeSeat(Guid TripId);
 
     }
 }

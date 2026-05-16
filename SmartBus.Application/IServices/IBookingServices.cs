@@ -1,4 +1,4 @@
-﻿using SmartBus.Application.Dtos.LocationDtos;
+﻿using SmartBus.Application.Dtos.BookingDtos;
 using SmartBus.Application.Result;
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SmartBus.Application.IServices
 {
-    public interface ILocationServices
+    public interface IBookingServices
     {
-        public Task<CustomResult<List<LocationDto>>>  GetLocations(string? name);
+        public Task<CustomResult> BookingSeat(BookingRequestDto requestDto, string userId);
     }
 }
