@@ -19,12 +19,10 @@ namespace SmartBus.Infrasturcture.Repository
 
         public async Task<double> GetPriceForSegment(Guid tripId, int fromStopOrder, int toStopOrder)
         {
-            var startSegment = await _dbSet.FirstOrDefaultAsync(s => s.TripId == tripId &&
-                                     s.FromStopOrder == fromStopOrder);
-            var endSegment = await _dbSet.FirstOrDefaultAsync(s => s.TripId == tripId &&
-                                     s.ToStopOrder == toStopOrder);
             
-            return endSegment!.Price + startSegment!.Price;
+            var result = await  _dbSet.Where(s => s.TripId == tripId && s.FromStopOrder >= fromStopOrder && s.FromStopOrder < toStopOrder).SumAsync(s => s.Price);
+            
+            return result;
         }
     }
 }

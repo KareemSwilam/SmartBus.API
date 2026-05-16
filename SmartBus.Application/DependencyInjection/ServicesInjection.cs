@@ -22,6 +22,7 @@ namespace SmartBus.Application.DependencyInjection
             services.AddScoped<ITripStopsServices, TripStopsServices>();
             services.AddScoped<ILocationServices, LocationServices>();
             services.AddScoped<IBookingServices, BookingServices>();
+            services.AddScoped<ISeatServices, SeatServices>();
             return services;
 
         }

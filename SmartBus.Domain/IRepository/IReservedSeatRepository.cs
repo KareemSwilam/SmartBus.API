@@ -9,5 +9,7 @@ namespace SmartBus.Domain.IRepository
 {
     public interface IReservedSeatRepository: IRepository<ReservedSeat>
     {
+        public Task<List<int>> GetReservedSeatsIdInTrip(Guid tripId, int fromStopOrder, int toStopOrder);
+        public Task<List<ReservedSeat>> GetReservedSeatsIdInTripWithDetails(Guid tripId, int fromStopOrder, int toStopOrder);
     }
 }

@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace SmartBus.Domain.IRepository
 {
     public interface ISeatRepository: IRepository<Seat>
-    {
+    {        
     }
 }
