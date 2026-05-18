@@ -4,7 +4,7 @@ using SmartBus.Application.IExternalServices;
 using SmartBus.Application.IServices;
 using SmartBus.Domain.IRepository;
 using SmartBus.Infrasturcture.ExternalServices.MailExternalServices;
-
+using SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices;
 using SmartBus.Infrasturcture.Repository;
 
 namespace SmartBus.Infrasturcture.DependencyInjection
@@ -29,7 +29,9 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();
             services.AddOptions<MailkitSetting>().Bind(configuration.GetSection(MailkitSetting.Name));
-            services.AddScoped<ISendingEmailService,SendingEmailService>(); 
+            services.AddOptions<FawaterekPaymentSetting>().Bind(configuration.GetSection(FawaterekPaymentSetting.Name));
+            services.AddScoped<ISendingEmailService,SendingEmailService>();
+            services.AddScoped<IPaymentServices, PaymentServices>();
             return services;
         }
 

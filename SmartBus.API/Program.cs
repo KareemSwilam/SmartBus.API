@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SmartBus.Application.DependencyInjection;
 using SmartBus.Infrasturcture.DependencyInjection;
-
+using Newtonsoft.Json;
 using SmartBus.Infrasturcture.Identity;
 using SmartBus.Infrasturcture.Persistence;
 using Swashbuckle.AspNetCore;
@@ -98,6 +98,7 @@ namespace SmartBus.API
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplicationMapping();
             builder.Services.AddAplicationServices();
+            
             builder.Services.AddHttpClient("GooglePlaces", client =>
             {
                 client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/search?");
