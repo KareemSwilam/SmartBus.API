@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartBus.Application.Dtos.PaymentMethodDtos;
 using SmartBus.Application.IExternalServices;
+using SmartBus.Application.IServices;
+using System.Threading.Tasks;
 
 namespace SmartBus.API.Controllers
 {
@@ -11,10 +13,11 @@ namespace SmartBus.API.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentServices _paymentServices;
-        public PaymentController(IPaymentServices paymentServices)
+        private readonly IBookingServices _booking;
+        public PaymentController(IPaymentServices paymentServices, IBookingServices booking)
         {
             _paymentServices = paymentServices;
-
+            _booking = booking;
         }
         [HttpPost]
         public async Task<IActionResult> EInvoice([FromBody] EInvoicesRequest eInvoices)
@@ -34,9 +37,21 @@ namespace SmartBus.API.Controllers
         }
         [HttpPost("webhook_json")]
         [AllowAnonymous]
-        public IActionResult WebHook([FromBody] WebHookResponseDto responseDto)
+        public async Task<IActionResult> WebHook([FromBody] WebHookResponseDto responseDto)
         {
-            var result =  _paymentServices.WebHook(responseDto);
+            var verify = _paymentServices.VerifyWebhook(responseDto);
+            if (!verify.IsSuccess)
+                return BadRequest(verify);
+            var result = await _booking.HandlePaymentWebhook(responseDto);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPost("refund_json")]
+        [AllowAnonymous]
+        public IActionResult RefundWebHook([FromBody] CancelWebHookResponseDto responseDto)
+        {
+            var result = _paymentServices.Cancelwebhook(responseDto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

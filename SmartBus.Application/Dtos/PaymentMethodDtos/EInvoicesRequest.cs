@@ -29,6 +29,8 @@ namespace SmartBus.Application.Dtos.PaymentMethodDtos
         public string Currency { get; set; } = "EGP";
         [JsonProperty("sendEmail")]
         public bool SendEmail { get; set; } = true;
+        [JsonProperty("payLoad")]
+        public BookingPayload? Payload { get; set; }
         [JsonProperty("redirectionUrls")]
         public RedirectionUrls RedirectionUrls { get; set; }
          
@@ -45,7 +47,7 @@ namespace SmartBus.Application.Dtos.PaymentMethodDtos
         [JsonProperty("email")]
         public string? email { get; set; }
         [JsonProperty("phone")]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
         [JsonProperty("customer_unique_id")]
         public string CustomerId { get; set; }
     }
@@ -57,6 +59,12 @@ namespace SmartBus.Application.Dtos.PaymentMethodDtos
         public decimal Price { get; set; }
         [JsonProperty("quantity")]
         public int Quantity { get; set; }
+    }
+    public class  BookingPayload
+    {
+        public int BookingId { get; set; }
+        public Guid TripId { get; set; }
+        public int SeatNumber { get; set; } 
     }
     public class EInvoicesResponse
     {

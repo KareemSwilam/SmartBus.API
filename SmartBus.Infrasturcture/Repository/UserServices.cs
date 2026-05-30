@@ -48,6 +48,7 @@ namespace SmartBus.Infrasturcture.Repository
             {
                 UserName = User!.UserName!,
                 Email = User.Email!,
+                PhoneNumber = User.PhoneNumber!,
                 IsCompany = User.IsCompany,
                 CompanyId = User.CompanyId,
             };

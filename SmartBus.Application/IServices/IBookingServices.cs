@@ -1,15 +1,14 @@
 ﻿using SmartBus.Application.Dtos.BookingDtos;
+using SmartBus.Application.Dtos.PaymentMethodDtos;
 using SmartBus.Application.Result;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartBus.Application.IServices
 {
     public interface IBookingServices
     {
-        public Task<CustomResult> BookingSeat(BookingRequestDto requestDto, string userId);
+        public Task<CustomResult<EInvoicesResponseData>> BookingSeat(BookingRequestDto requestDto, string userId);
+        public Task<CustomResult> HandlePaymentWebhook(WebHookResponseDto responseDto);
+        public Task<CustomResult> HandleCancelPaymentWebhook(CancelWebHookResponseDto responseDto);
+
     }
 }

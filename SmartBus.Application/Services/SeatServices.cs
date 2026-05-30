@@ -99,7 +99,7 @@ namespace SmartBus.Application.Services
             }).ToList();
             var result = new ReservedSeatDto {
                 TripId = tripId,
-                PlateNumber = resevedSeats.Select(g => g.Bus.PlateNumber).First(),
+                PlateNumber = resevedSeats.Select(g => g.Bus.PlateNumber).FirstOrDefault(),
                 Seats = seats,
             };
             return CustomResult<ReservedSeatDto>.Success(result);

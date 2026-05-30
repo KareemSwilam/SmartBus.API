@@ -1,16 +1,19 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Crmf;
 using SmartBus.Application.Dtos.PaymentMethodDtos;
 using SmartBus.Application.IExternalServices;
+using SmartBus.Application.IServices;
 using SmartBus.Application.Result;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +24,7 @@ namespace SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly FawaterekPaymentSetting _setting;
+        
 
         public PaymentServices(IHttpClientFactory httpClientFactory, IOptions<FawaterekPaymentSetting> options)
         {
@@ -57,12 +61,9 @@ namespace SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices
 
             return CustomResult<EInvoicesResponseData>.Success(result!.Data);
         }
-        public  CustomResult WebHook(WebHookResponseDto responseDto)
+        
+        public CustomResult Cancelwebhook(CancelWebHookResponseDto responseDto)
         {
-            var IsValid = VerifyWebhook(responseDto);
-            if (!IsValid)
-              return CustomResult.Failure(CustomError.InvalidInput("Invalid webhook"));
-            
             return CustomResult.Success();
         }
         public async Task<CustomResult<List<PaymentMethodResponseData>>> GetPaymentMethods()
@@ -94,11 +95,11 @@ namespace SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices
 
             return CustomResult<List<PaymentMethodResponseData>>.Success(result.Data);
         }
-        public bool VerifyWebhook(WebHookResponseDto webHook)
+        public CustomResult VerifyWebhook(WebHookResponseDto webHook)
         {
             var generatedHashKey =
                 GenerateHashKeyForWebhookVerification(webHook.InvoiceId, webHook.InvoiceKey, webHook.PaymentMethod);
-            return generatedHashKey == webHook.HashKey;
+            return generatedHashKey == webHook.HashKey ? CustomResult.Success() : CustomResult.Failure(CustomError.InvalidInput("Invalid webhook"));
         }
         private string GenerateHashKeyForWebhookVerification(long invoiceId, string invoiceKey, string paymentMethod)
         {
@@ -107,5 +108,7 @@ namespace SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices
             var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(queryParam));
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
+
+        
     }
 }

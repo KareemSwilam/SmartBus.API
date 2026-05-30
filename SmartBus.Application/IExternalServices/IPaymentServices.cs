@@ -12,6 +12,7 @@ namespace SmartBus.Application.IExternalServices
     {
         Task<CustomResult<EInvoicesResponseData>> CreateEInvoice(EInvoicesRequest eInvoices);   
         Task<CustomResult<List<PaymentMethodResponseData>>> GetPaymentMethods();
-        CustomResult WebHook(WebHookResponseDto responseDto);
+        CustomResult VerifyWebhook(WebHookResponseDto responseDto);
+        CustomResult Cancelwebhook(CancelWebHookResponseDto responseDto);
     }
 }

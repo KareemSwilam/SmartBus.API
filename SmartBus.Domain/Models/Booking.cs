@@ -20,5 +20,7 @@ namespace SmartBus.Domain.Models
         public Trip Trip { get; set; }
         public Tickect Ticket { get; set; }    
         public int SeatNumber { get; set; }
+        public long? InvoiceId { get; set; }
+        public string? PaymentReferenceNumber { get; set; }
     }
 }
