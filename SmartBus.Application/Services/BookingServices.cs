@@ -14,11 +14,13 @@ namespace SmartBus.Application.Services
         private readonly IUnitOfWork _unit;
         private readonly IPaymentServices _paymentServices;
         private readonly IUserServices _userServices;
-        public BookingServices(IUnitOfWork unit, IPaymentServices paymentServices, IUserServices userServices)
+        private readonly IBackgroundTaskQueue _backgroundTaskQueue;
+        public BookingServices(IUnitOfWork unit, IPaymentServices paymentServices, IUserServices userServices, IBackgroundTaskQueue backgroundTaskQueue)
         {
             _unit = unit;
             _paymentServices = paymentServices;
             _userServices = userServices;
+            _backgroundTaskQueue = backgroundTaskQueue;
         }
         public async Task<CustomResult<EInvoicesResponseData>> BookingSeat(BookingRequestDto requestDto, string userId)
         {
@@ -97,7 +99,10 @@ namespace SmartBus.Application.Services
             _unit.BookingRepository.Update(bookingExist);
             var complete = await _unit.SaveAsync();
             if (complete == 1)
+            {
+                _backgroundTaskQueue.QueueBookingTicket(bookingExist.Id);
                 return CustomResult.Success();
+            }
             return CustomResult.Failure(CustomError.ServerError("Fail To Update Booking Status"));
 
         }

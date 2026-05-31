@@ -9,5 +9,6 @@ namespace SmartBus.Application.IExternalServices
     public interface ISendingEmailService
     {
         public Task<bool> SendingEmail(string to, string subject, string body);
+        public Task<bool> SendingEmailWithAttachment(string to, string subject, string body, byte[] attachment, string attachmentName);
     }
 }
