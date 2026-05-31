@@ -10,7 +10,7 @@ namespace SmartBus.Application.Dtos.PaymentMethodDtos
     public class CancelWebHookResponseDto
     {
         [JsonPropertyName("transactionId")]
-        public string TransactionId { get; set; }
+        public long TransactionId { get; set; }
         [JsonPropertyName("amount")]
         public decimal Amount { get; set; }
         [JsonPropertyName("currency")]

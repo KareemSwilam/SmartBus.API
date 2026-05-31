@@ -19,6 +19,7 @@ namespace SmartBus.Domain.Models
         public BookingStatus Status { get; set; }
         public Trip Trip { get; set; }
         public Tickect Ticket { get; set; }    
+        public RefundRequest RefundRequest { get; set; }
         public int SeatNumber { get; set; }
         public long? InvoiceId { get; set; }
         public string? PaymentReferenceNumber { get; set; }

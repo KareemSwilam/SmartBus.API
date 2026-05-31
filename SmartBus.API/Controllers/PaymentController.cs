@@ -49,9 +49,9 @@ namespace SmartBus.API.Controllers
         }
         [HttpPost("refund_json")]
         [AllowAnonymous]
-        public IActionResult RefundWebHook([FromBody] CancelWebHookResponseDto responseDto)
+        public async Task<IActionResult> RefundWebHook([FromBody] CancelWebHookResponseDto responseDto)
         {
-            var result = _paymentServices.Cancelwebhook(responseDto);
+            var result = await _booking.HandleCancelPaymentWebhook(responseDto);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

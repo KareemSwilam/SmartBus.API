@@ -31,6 +31,7 @@ namespace SmartBus.Infrasturcture.Persistence
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<ReservedSeat> ReservedSeats { get; set; }
         public DbSet<StopSegment> StopSegments { get; set; }
+        public DbSet<RefundRequest> RefundRequests { get; set; }    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

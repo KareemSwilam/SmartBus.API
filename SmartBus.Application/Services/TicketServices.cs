@@ -15,6 +15,8 @@ using ZXing;
 using ZXing.Common;
 using SkiaSharp;
 using Document = QuestPDF.Fluent.Document;
+using SmartBus.Application.Result;
+using SmartBus.Domain.Enums;
 
 namespace SmartBus.Application.Services
 {
@@ -61,7 +63,17 @@ namespace SmartBus.Application.Services
                 );
             
         }
-        public byte[] GeneratePdf(
+        public async Task<CustomResult<string>> ValidateTicket(int bookingId)
+        {
+            var bookingExist = await _unitOfWork.BookingRepository.Get(b => b.Id == bookingId);
+            if(bookingExist == null) 
+                return CustomResult<string>.Failure(CustomError.NotFound("Booking Not Found"));
+            if (bookingExist.Status == BookingStatus.confirmed)
+                return CustomResult<string>.Success("Valid Ticket");
+            return CustomResult<string>.Failure(CustomError.InvalidInput("Not Valid Ticket"));
+
+        }
+        private byte[] GeneratePdf(
                  GenerateTicketInfoDto ticket,
              byte[] qrCodeImage)
         {
@@ -204,7 +216,7 @@ namespace SmartBus.Application.Services
             })
              .GeneratePdf();
         }
-        public byte[] GenerateQrCode(int bookingReference)
+        private byte[] GenerateQrCode(int bookingReference)
         {
             var writer = new BarcodeWriterPixelData
             {
@@ -235,6 +247,8 @@ namespace SmartBus.Application.Services
             using var data = image.Encode(SKEncodedImageFormat.Png, 100);
 
             return data.ToArray(); ;
-        }   
+        }
+
+        
     }
 }

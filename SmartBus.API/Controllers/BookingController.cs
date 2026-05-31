@@ -27,5 +27,15 @@ namespace SmartBus.API.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpGet("UserBooking")]
+        [Authorize]
+        public async Task<IActionResult> UserBooking()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _booking.GetUserBookings(userId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
     }
 }

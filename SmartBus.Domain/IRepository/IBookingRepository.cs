@@ -9,5 +9,6 @@ namespace SmartBus.Domain.IRepository
 {
     public interface IBookingRepository: IRepository<Booking>
     {
+        Task<List<Booking>> GetUserBookingWithTrip(string userId);
     }
 }

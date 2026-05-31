@@ -1,4 +1,5 @@
-﻿using SmartBus.Application.Dtos.BookingDtos;
+﻿using MapsterMapper;
+using SmartBus.Application.Dtos.BookingDtos;
 using SmartBus.Application.Dtos.PaymentMethodDtos;
 using SmartBus.Application.IExternalServices;
 using SmartBus.Application.IServices;
@@ -15,12 +16,16 @@ namespace SmartBus.Application.Services
         private readonly IPaymentServices _paymentServices;
         private readonly IUserServices _userServices;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
-        public BookingServices(IUnitOfWork unit, IPaymentServices paymentServices, IUserServices userServices, IBackgroundTaskQueue backgroundTaskQueue)
+        private readonly IMapper _mapper;
+        public BookingServices(IUnitOfWork unit, IPaymentServices paymentServices,
+                        IUserServices userServices, IBackgroundTaskQueue backgroundTaskQueue, IMapper mapper)
         {
             _unit = unit;
             _paymentServices = paymentServices;
             _userServices = userServices;
             _backgroundTaskQueue = backgroundTaskQueue;
+            _mapper = mapper;
+
         }
         public async Task<CustomResult<EInvoicesResponseData>> BookingSeat(BookingRequestDto requestDto, string userId)
         {
@@ -30,9 +35,8 @@ namespace SmartBus.Application.Services
             var LocationId = TripExist!.TripStops.Select(s => s.LocationId).ToList();
             if (!LocationId.Contains(requestDto.StartLocationId) || !LocationId.Contains(requestDto.EndLocationId))
                 return CustomResult<EInvoicesResponseData>.Failure(CustomError.InvalidInput("Invalid start or end location"));
-            if (!(TripExist.BusId == requestDto.BusId))
-                return CustomResult<EInvoicesResponseData>.Failure(CustomError.InvalidInput("This bus Not in This trip"));
-            var bus = await _unit.BusRepository.GetBusWithSeat(requestDto.BusId);
+            
+            var bus = await _unit.BusRepository.GetBusWithSeat(TripExist.BusId);
             var SeatsIds = bus.Seats.Select(s => s.Id).ToList();
             if (!SeatsIds.Contains(requestDto.SeatId))
                 return CustomResult<EInvoicesResponseData>.Failure(CustomError.InvalidInput("InValid Seat Number"));
@@ -52,7 +56,8 @@ namespace SmartBus.Application.Services
                 SeatNumber = bus.Seats.First(s => s.Id == requestDto.SeatId).SeatNumber,
                 UserId = userId,
                 Price = Price,
-                Status = BookingStatus.pending
+                Status = BookingStatus.pending,
+                BookingDate = DateTime.UtcNow   
 
             };
             var ReservedSeat = new ReservedSeat
@@ -61,7 +66,7 @@ namespace SmartBus.Application.Services
                 StartStopOrder = FromStopOrder,
                 EndStopOrder = ToStopOrder,
                 SeatId = requestDto.SeatId,
-                BusId = requestDto.BusId,
+                BusId = TripExist.BusId,
             };
             await _unit.BookingRepository.Add(booking);
             await _unit.ReservedSeatRepository.Add(ReservedSeat);
@@ -73,10 +78,16 @@ namespace SmartBus.Application.Services
 
 
         }
+        public async Task<CustomResult<List<UserBookingDto>>> GetUserBookings(string userId)
+        {
+            var bookings = await _unit.BookingRepository.GetUserBookingWithTrip(userId);
+            var bookingDtos = _mapper.Map<List<UserBookingDto>>(bookings);
+            return CustomResult<List<UserBookingDto>>.Success(bookingDtos);
+        }
 
         public async Task<CustomResult> HandleCancelPaymentWebhook(CancelWebHookResponseDto responseDto)
         {
-            var bookingExist = await _unit.BookingRepository.Get(b => b.PaymentReferenceNumber == responseDto.TransactionId);
+            var bookingExist = await _unit.BookingRepository.Get(b => b.InvoiceId == responseDto.TransactionId);
             if (bookingExist == null)
                 return CustomResult.Failure(CustomError.NotFound("Booking Not Found"));
             bookingExist.Status = BookingStatus.cancelled;
