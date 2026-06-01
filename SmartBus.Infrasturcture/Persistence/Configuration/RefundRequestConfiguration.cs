@@ -22,10 +22,12 @@ namespace SmartBus.Infrasturcture.Persistence.Configuration
                    .IsRequired();
             builder.Property(r => r.Status)
                    .IsRequired();
-          
+
             builder.HasOne(r => r.Booking)
-                   .WithOne()
-                   .HasForeignKey<RefundRequest>(r => r.BookingId);   
+                   .WithOne();
+            builder.HasOne(r => r.Company)
+                   .WithMany()
+                   .HasForeignKey(r => r.CompanyId);
         }
     }
 }

@@ -19,6 +19,7 @@ namespace SmartBus.Domain.IRepository
         public ITripStopRepository TripStopRepository { get; }
         public IStopSegmentRepository StopSegmentRepository { get; }
         public IReservedSeatRepository ReservedSeatRepository { get; }
+        public IRefundRequestRepository RefundRequestRepository { get; }
         public Task<int> SaveAsync();
     }
 }

@@ -10,6 +10,8 @@ namespace SmartBus.Domain.Models
     {
         public int Id { get; set; }
         public Guid TripId { get; set; }
+        public string UserId { get; set; }
+        public int BookingId { get; set; }
         public int BusId { get; set; }  
         public int SeatId { get; set; }
         public int StartStopOrder { get; set; }    

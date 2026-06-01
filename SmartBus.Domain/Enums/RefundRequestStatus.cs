@@ -8,8 +8,8 @@ namespace SmartBus.Domain.Enums
 {
     public enum RefundRequestStatus
     {
-        Pending = 0,
-        Proccessing = 1,
+        pending = 0,
+        proccessing = 1,
         completed = 2,
     }
 }

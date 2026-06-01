@@ -1,20 +1,14 @@
 ﻿using SmartBus.Domain.IRepository;
 using SmartBus.Infrasturcture.Persistence;
-using SmartBus.Infrasturcture.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartBus.Infrasturcture.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        
+
         private readonly ApplicationContext _context;
         public IBookingRepository BookingRepository { get; private set; }
-        public IBusRepository BusRepository { get; private set;}
+        public IBusRepository BusRepository { get; private set; }
 
         public ICompanyRepository CompanyRepository { get; private set; }
 
@@ -31,18 +25,20 @@ namespace SmartBus.Infrasturcture.Repository
         public ITripStopRepository TripStopRepository { get; private set; }
         public IStopSegmentRepository StopSegmentRepository { get; private set; }
         public IReservedSeatRepository ReservedSeatRepository { get; private set; }
+        public IRefundRequestRepository RefundRequestRepository { get; private set; }
         public UnitOfWork(ApplicationContext context,
             IBookingRepository bookingRepository,
-            IBusRepository busRepository, 
+            IBusRepository busRepository,
             ICompanyRepository companyRepository,
             IDervierRepository dervierRepository,
             ILocationRepository locationRepository,
             ISeatRepository seatRepository,
             ITicketRepository ticketRepository,
             ITripRepository tripRepository,
-            ITripStopRepository tripStopRepository, 
+            ITripStopRepository tripStopRepository,
             IStopSegmentRepository stopSegmentRepository,
-            IReservedSeatRepository reservedSeatRepository
+            IReservedSeatRepository reservedSeatRepository,
+            IRefundRequestRepository refundRequestRepository
             )
         {
             BookingRepository = bookingRepository;
@@ -57,12 +53,12 @@ namespace SmartBus.Infrasturcture.Repository
             _context = context;
             StopSegmentRepository = stopSegmentRepository;
             ReservedSeatRepository = reservedSeatRepository;
-
+            RefundRequestRepository = refundRequestRepository;
 
         }
         public async Task<int> SaveAsync()
         {
-           return  await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }

@@ -25,6 +25,7 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddScoped<ITripStopRepository, TripStopRepository>();
             services.AddScoped<IReservedSeatRepository, ReservedSeatRepository>();
             services.AddScoped<IStopSegmentRepository,StopSegmentRepository>();
+            services.AddScoped<IRefundRequestRepository, RefundRequestRepository>();    
             services.AddScoped<IAuthenticationServices, AuthenticationServices>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();

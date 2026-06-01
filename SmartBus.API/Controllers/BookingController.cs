@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SmartBus.Application.Dtos.BookingDtos;
 using SmartBus.Application.IServices;
 using System.Security.Claims;
@@ -23,7 +21,7 @@ namespace SmartBus.API.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var result = await _booking.BookingSeat(dto, userId);
-              if (result.IsSuccess)
+            if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);
         }
@@ -33,6 +31,24 @@ namespace SmartBus.API.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var result = await _booking.GetUserBookings(userId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPatch("CancelBooking/{bookingId}")]
+        [Authorize]
+        public async Task<IActionResult> CancelBooking(int bookingId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _booking.CancelBooking(bookingId, userId);
+            if (result.IsSuccess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpGet("RefundRequest/{companyId}")]
+        public async Task<IActionResult> RefundRequest(Guid companyId)
+        {
+            var result = await _booking.GetRefundRequest(companyId);
             if (result.IsSuccess)
                 return Ok(result);
             return BadRequest(result);

@@ -12,9 +12,12 @@ namespace SmartBus.Domain.Models
         public int Id { get; set; } 
         public string UserId { get; set; }
         public int BookingId { get; set; }
+        public long InvoiceId { get; set; }
+        public Guid CompanyId { get; set; }
         public DateTime RequestTime { get; set; }   
         public RefundRequestStatus Status { get; set; }
         public DateTime? CompleteTime { get; set; }
         public Booking Booking { get; set; }
+        public Company Company { get; set; }
     }
 }
