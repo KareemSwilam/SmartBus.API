@@ -5,6 +5,7 @@ using SmartBus.Application.IServices;
 using SmartBus.Domain.IRepository;
 using SmartBus.Infrasturcture.ExternalServices.MailExternalServices;
 using SmartBus.Infrasturcture.ExternalServices.PaymentExternalServices;
+using SmartBus.Infrasturcture.ExternalServices.SignalRServices;
 using SmartBus.Infrasturcture.Repository;
 
 namespace SmartBus.Infrasturcture.DependencyInjection
@@ -25,7 +26,8 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddScoped<ITripStopRepository, TripStopRepository>();
             services.AddScoped<IReservedSeatRepository, ReservedSeatRepository>();
             services.AddScoped<IStopSegmentRepository,StopSegmentRepository>();
-            services.AddScoped<IRefundRequestRepository, RefundRequestRepository>();    
+            services.AddScoped<IRefundRequestRepository, RefundRequestRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IAuthenticationServices, AuthenticationServices>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IRoleServices, RoleServices>();
@@ -33,6 +35,7 @@ namespace SmartBus.Infrasturcture.DependencyInjection
             services.AddOptions<FawaterekPaymentSetting>().Bind(configuration.GetSection(FawaterekPaymentSetting.Name));
             services.AddScoped<ISendingEmailService,SendingEmailService>();
             services.AddScoped<IPaymentServices, PaymentServices>();
+            services.AddScoped<INotifyServices, NotifyServices>();
             return services;
         }
 

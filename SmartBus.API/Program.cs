@@ -13,6 +13,7 @@ using SmartBus.Application.IServices;
 using SmartBus.Application.Services;
 using SmartBus.Infrasturcture.BackgroundServices;
 using SmartBus.Infrasturcture.DependencyInjection;
+using SmartBus.Infrasturcture.Hubs;
 using SmartBus.Infrasturcture.Identity;
 using SmartBus.Infrasturcture.Persistence;
 using Swashbuckle.AspNetCore;
@@ -99,6 +100,7 @@ namespace SmartBus.API
                     ValidateLifetime = true,
                 };
             });
+            builder.Services.AddSignalR();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplicationMapping();
             builder.Services.AddAplicationServices();
@@ -128,7 +130,7 @@ namespace SmartBus.API
 
 
             app.MapControllers();
-
+            app.MapHub<NotificationHub>("/hubs/notification");
             app.Run();
         }
     }

@@ -1,4 +1,6 @@
-﻿using SmartBus.Application.IServices;
+﻿using SmartBus.Application.Dtos.NotificationDtos;
+using SmartBus.Application.IServices;
+using SmartBus.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,22 +12,35 @@ namespace SmartBus.Application.Services
 {
     public class BackgroundTaskQueue : IBackgroundTaskQueue
     {
-        private readonly Channel<int> _queue;
+        private readonly Channel<int> _BookingQueue;
+        private readonly Channel<CreateNotificationDto> _NotificationQueue;
         public BackgroundTaskQueue()
         {
-            _queue = Channel.CreateUnbounded<int>();
-
+            _BookingQueue = Channel.CreateUnbounded<int>();
+            _NotificationQueue = Channel.CreateUnbounded<CreateNotificationDto>();
         }
         public async Task<int> DequeueAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine("background Try to get booking id from queue");
-            return await _queue.Reader.ReadAsync(cancellationToken);
+            
+            return await _BookingQueue.Reader.ReadAsync(cancellationToken);
+        }
+
+        public async Task<CreateNotificationDto> DequeueNotificationAsync(CancellationToken cancellationToken)
+        {
+            
+            return await _NotificationQueue.Reader.ReadAsync(cancellationToken);
         }
 
         public void QueueBookingTicket(int bookingId)
         {
-            _queue.Writer.TryWrite(bookingId);
-            Console.WriteLine("recieving booking id from Booking Services ");
+            _BookingQueue.Writer.TryWrite(bookingId);
+            
+        }
+
+        public void QueueNotification(CreateNotificationDto notification)
+        {
+            _NotificationQueue.Writer.TryWrite(notification);
+            
         }
     }
 }
