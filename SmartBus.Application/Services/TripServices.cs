@@ -28,7 +28,7 @@ namespace SmartBus.Application.Services
             var CompanyExist = await _unit.CompanyRepository.Get(C => C.Id == dto.CompanyId);   
             if(CompanyExist == null)
                 return CustomResult<TripDto>.Failure(CustomError.NotFound("Company Not Found"));
-            var DriverExist = await _unit.DervierRepository.Get(D => D.Id == dto.DervierId && D.CompanyId == dto.CompanyId);
+            var DriverExist = await _unit.DervierRepository.Get(D => D.Id == dto.DriverId && D.CompanyId == dto.CompanyId);
             if (DriverExist == null)
                 return CustomResult<TripDto>.Failure(CustomError.NotFound("Deriver Not Found"));
             var BusExist = await _unit.BusRepository.Get(B => B.Id == dto.BusId && B.CompanyId == dto.CompanyId);

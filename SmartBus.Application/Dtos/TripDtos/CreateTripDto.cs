@@ -9,7 +9,7 @@ namespace SmartBus.Application.Dtos.TripDtos
     public class CreateTripDto
     {
         public int BusId { get; set; }
-        public Guid DervierId { get; set; }
+        public Guid DriverId { get; set; }
         public Guid CompanyId { get; set; }
 
         public DateTime DepartureTime { get; set; }

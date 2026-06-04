@@ -49,7 +49,7 @@ namespace SmartBus.API
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "AuthTest API",
+                    Title = "SmartBus API",
                     Version = "v1"
                 });
 
@@ -106,7 +106,20 @@ namespace SmartBus.API
             builder.Services.AddAplicationServices();
             builder.Services.AddHostedService<TicketBackgroundServies>();
             QuestPDF.Settings.License = LicenseType.Community;
+            
 
+            builder.Services.AddCors(options =>
+            {
+
+                options.AddPolicy("SignalRCors", policy =>
+                {
+                    policy
+                        .SetIsOriginAllowed(_ => true)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
 
 
             builder.Services.AddHttpClient("GooglePlaces", client =>
@@ -123,13 +136,14 @@ namespace SmartBus.API
                 app.UseSwaggerUI();
 
             }
-
+            app.UseCors("SignalRCors");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
 
 
             app.MapControllers();
+            
             app.MapHub<NotificationHub>("/hubs/notification");
             app.Run();
         }
