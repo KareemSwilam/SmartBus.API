@@ -4,7 +4,7 @@
 
 ### Bus Booking & Trip Management Platform
 
-Built with **ASP.NET Core 9** · **Clean Architecture** · **SQL Server** ·**Fawaterek Payment **·
+Built with **ASP.NET Core 9** · **Clean Architecture** · **SQL Server** ·**Fawaterek Payment**·
 
 </div>
 
