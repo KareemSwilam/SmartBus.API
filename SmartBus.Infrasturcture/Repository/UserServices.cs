@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SmartBus.Application.Dtos.UserDtos;
 using SmartBus.Application.IServices;
 using SmartBus.Application.Result;
@@ -42,6 +43,22 @@ namespace SmartBus.Infrasturcture.Repository
         public async Task<CustomResult<UserDto>> User(string id)
         {
             var User = await _identity.FindByIdAsync(id);
+            if (User == null)
+                CustomResult.Failure(CustomError.NotFound("User Not Exist"));
+            var userDto = new UserDto()
+            {
+                UserName = User!.UserName!,
+                Email = User.Email!,
+                PhoneNumber = User.PhoneNumber!,
+                IsCompany = User.IsCompany,
+                CompanyId = User.CompanyId,
+            };
+            return CustomResult<UserDto>.Success(userDto);
+
+        }
+        public async Task<CustomResult<UserDto>> UserByCompanyId(Guid companyId)
+        {
+            var User = await _context.Users.Where(u => u.CompanyId == companyId).FirstOrDefaultAsync();
             if (User == null)
                 CustomResult.Failure(CustomError.NotFound("User Not Exist"));
             var userDto = new UserDto()

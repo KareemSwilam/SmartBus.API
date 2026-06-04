@@ -12,5 +12,6 @@ namespace SmartBus.Application.IServices
     {
         public Task<CustomResult<UserDto>> User(string id);
         public Task<CustomResult> UpdateUser(string id, UserDto user);
+        public Task<CustomResult<UserDto>> UserByCompanyId(Guid companyId);
     }
 }

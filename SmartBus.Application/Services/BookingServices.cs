@@ -1,5 +1,6 @@
 ﻿using MapsterMapper;
 using SmartBus.Application.Dtos.BookingDtos;
+using SmartBus.Application.Dtos.NotificationDtos;
 using SmartBus.Application.Dtos.PaymentMethodDtos;
 using SmartBus.Application.Dtos.RefundRequestDtos;
 using SmartBus.Application.IExternalServices;
@@ -95,6 +96,22 @@ namespace SmartBus.Application.Services
             var bookingDtos = _mapper.Map<List<UserBookingDto>>(bookings);
             return CustomResult<List<UserBookingDto>>.Success(bookingDtos);
         }
+        public async Task<CustomResult<UserBookingDto>> GetBooking(int id)
+        {
+                var booking = await _unit.BookingRepository.GetBookingWithDetails(b => b.Id == id);
+                if (booking == null)
+                    return CustomResult<UserBookingDto>.Failure(CustomError.NotFound("Booking Not Found"));
+                var bookingDto = _mapper.Map<UserBookingDto>(booking);
+                return CustomResult<UserBookingDto>.Success(bookingDto);
+        }
+        public async Task<CustomResult<List<UserBookingDto>>> TripBookings(Guid tripId)
+        {
+            var bookings = await _unit.BookingRepository.GetTripBookings(tripId);
+            if (bookings == null || !bookings.Any())
+                return CustomResult<List<UserBookingDto>>.Failure(CustomError.NotFound("Booking Not Found"));
+            var bookingDtos = _mapper.Map<List<UserBookingDto>>(bookings);
+            return CustomResult<List<UserBookingDto>>.Success(bookingDtos);
+        }
         public async Task<CustomResult> CancelBooking(int bookingId, string userId) 
         {
             var bookingExist =  await _unit.BookingRepository.Get(b => b.Id == bookingId && b.UserId == userId);
@@ -123,6 +140,16 @@ namespace SmartBus.Application.Services
                         Status = RefundRequestStatus.pending
                     };
                     await _unit.RefundRequestRepository.Add(refund);
+                    var companyId = (await _unit.TripRepository.Get(t => t.Id == bookingExist.TripId)).CompanyId;
+                    var adminUser = await _userServices.UserByCompanyId(companyId);
+                    _backgroundTaskQueue.QueueNotification(new CreateNotificationDto
+                    {
+                        UserId = adminUser.Value!.Id,
+                        TargetId = bookingExist.Id.ToString(),
+                        TargetType = NotificationTargetType.Booking,
+                        Message = $"There is Refund request.",
+
+                    });
                 }
             }
             bookingExist.Status = BookingStatus.cancelled;
@@ -169,6 +196,25 @@ namespace SmartBus.Application.Services
             if (complete == 1)
             {
                 _backgroundTaskQueue.QueueBookingTicket(bookingExist.Id);
+                _backgroundTaskQueue.QueueNotification(new CreateNotificationDto
+                {
+                    UserId = bookingExist.UserId,
+                    TargetId = bookingExist.Id.ToString(),
+                    TargetType = NotificationTargetType.Booking,
+                    Message = $"Your booking for trip has been confirmed.",
+                    
+                }); 
+
+                var companyId = (await _unit.TripRepository.Get(t => t.Id == bookingExist.TripId)).CompanyId;
+                var adminUser = await _userServices.UserByCompanyId(companyId);
+                _backgroundTaskQueue.QueueNotification(new CreateNotificationDto
+                {
+                    UserId = adminUser.Value!.Id,
+                    TargetId = bookingExist.Id.ToString(),
+                    TargetType = NotificationTargetType.Booking,
+                    Message = $"New Booking confirmed Trip.",
+
+                });
                 return CustomResult.Success();
             }
             return CustomResult.Failure(CustomError.ServerError("Fail To Update Booking Status"));
